@@ -2,6 +2,7 @@
 class iphp_MW_Manager
 {
 	public $link = null;
+	public $job_results = array();
 	private $name = '';
 	private $master_link = null;
 	private $master_wait = false;
@@ -11,7 +12,7 @@ class iphp_MW_Manager
 	private $jobs = array();
 	private $quit = false;
 	private $job_pending = 0;
-	
+
 	function __construct(){
 		global $argv;
 		$this->name = basename($argv[0]);
@@ -188,6 +189,7 @@ class iphp_MW_Manager
 				$job = $req['data'];
 				$worker['job_pending'] --;
 				$this->job_pending --;
+				$this->job_results[] = $job['result'];
 				$use_time = sprintf('%.3f', microtime(1) - $job['time']);
 				#Logger::debug("[{$this->name}] finish job: {$job['id']}, use_time: $use_time, result: " . json_encode($job['result']));
 			}

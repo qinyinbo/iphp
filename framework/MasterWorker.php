@@ -22,6 +22,7 @@ abstract class MasterWorker
 	
 	// 默认 300 秒
 	function set_max_idle_time($secs){
+
 		$this->manager->set_max_idle_time($secs);
 	}
 
@@ -50,7 +51,7 @@ abstract class MasterWorker
 		$this->master = new iphp_MW_Master($this);
 	}
 	
-	function run(){
+	function run($call_back = false){
 		$this->manager->init();
 		
 		$this->start_master($this->manager);
@@ -77,6 +78,13 @@ abstract class MasterWorker
 				break;
 			}
 		}
+		if ($call_back) {
+			$job_results = $this->get_results();
+			$this->call_back($job_results);
+		}
+	}
+	function get_results() {
+		return $this->manager->job_results;
 	}
 	
 	private function start_master($manager){

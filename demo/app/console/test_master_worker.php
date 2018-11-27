@@ -26,13 +26,20 @@ class MyMasterWorker extends MasterWorker
 		// ...
 		$pid = posix_getpid();
 		Logger::debug("[$pid] process job: " . json_encode($job));
-		return true;
+		return $pid;
+	}
+
+	//并行处理完成后的回调函数
+	function call_back($job_result) {
+		//在这里可以对并行处理结果进行汇总校验
+		//或者在这里可以对并处理结果继续处理
+		Logger::debug("job_result:" . json_encode($job_result));
 	}
 }
 
 $mw = new MyMasterWorker();
 $mw->set_num_workers(3);
-$mw->run();
-
+//当call_back参数设置为true时需要定义call_back函数
+$mw->run(true);
 
 
